@@ -1,22 +1,25 @@
-# Dockerfile
 FROM ubuntu:22.04
 
-# Install XFCE4, XRDP, dan kebutuhan RDP lainnya
+# Hindari interaksi saat instalasi
 ENV DEBIAN_FRONTEND=noninteractive
+
+# Install XFCE, Wine, dan aplikasi pendukung
 RUN apt-get update && apt-get install -y \
-    xfce4 xfce4-goodies xrdp tightvncserver \
+    xfce4 xfce4-goodies xrdp \
+    wine64 winetricks xvfb \
     && apt-get clean
 
 # Konfigurasi user
-RUN useradd -m -s /bin/bash ErickDrfile && \
-    echo "TuanEri:TuanEri@2026!" | chpasswd && \
-    adduser TuanEri sudo
+RUN useradd -m -s /bin/bash tuan && \
+    echo "tuan:password123" | chpasswd && \
+    adduser tuan sudo
 
 # Konfigurasi XRDP
-RUN echo xfce4-session > /etc/skel/.xsession
-RUN echo "xfce4-session" > /home/TuanSebastian/.xsession
+RUN echo xfce4-session > /home/tuan/.xsession
+RUN echo "xfce4-session" > /etc/skel/.xsession
 
 EXPOSE 3389
 
-# Jalankan XRDP saat container mulai
+# Menjalankan XRDP di latar belakang
 CMD ["/usr/sbin/xrdp", "-n"]
+
